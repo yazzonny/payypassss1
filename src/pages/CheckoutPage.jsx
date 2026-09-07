@@ -59,10 +59,10 @@ export const CheckoutPage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleCompleteOrder = async () => {
+  const handleCompleteOrder = async (paymentProofUrl) => {
     if (!validateForm()) {
       window.scrollTo({ top: 120, behavior: 'smooth' });
-      return;
+      throw new Error('Validation failed');
     }
 
     if (items.length === 0) {
@@ -93,6 +93,7 @@ export const CheckoutPage = () => {
         discountAmount,
         couponCode: coupon?.code || null,
         total,
+        paymentProofUrl: paymentProofUrl || '',
         userId: user?.uid || null
       };
 
@@ -100,8 +101,11 @@ export const CheckoutPage = () => {
       clearCart();
       navigate(`/order-success/${createdOrder.id}`, { state: { order: createdOrder } });
     } catch (err) {
-      console.error('Order creation error:', err);
-      alert(language === 'ar' ? 'حدث خطأ أثناء إنشاء الطلب' : 'Failed to create order. Please try again.');
+      if (err.message !== 'Validation failed') {
+        console.error('Order creation error:', err);
+        alert(language === 'ar' ? 'حدث خطأ أثناء إنشاء الطلب' : 'Failed to create order. Please try again.');
+      }
+      throw err;
     } finally {
       setIsProcessing(false);
     }

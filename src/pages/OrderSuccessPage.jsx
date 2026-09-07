@@ -125,21 +125,21 @@ export const OrderSuccessPage = () => {
             )}
           </div>
 
-          {/* CRITICAL CONFIRMATION BANNER AS SPECIFIED */}
+          {/* REQUIRED CONFIRMATION BANNER AS SPECIFIED */}
           <div className="whatsapp-action-banner animate-glow">
             <div className="wa-banner-icon-box">
-              <MessageCircle size={32} />
+              <ShieldCheck size={32} />
             </div>
             <div className="wa-banner-content">
-              <h3 className="wa-banner-headline">
+              <h2 className="wa-banner-headline">
                 {language === 'ar'
-                  ? 'بعد إتمام الدفع، تواصل معنا عبر الواتساب لتأكيد الدفع واستلام طلبك'
-                  : 'After completing payment, contact us on WhatsApp to confirm your payment and receive your product.'}
-              </h3>
+                  ? 'شكراً لك! تم استلام طلبك وإيصال تحويل الدفعة بنجاح. سيقوم فريقنا بالتحقق من الدفع وتسليم منتجك في أقرب وقت.'
+                  : 'Thank you! Your order and payment screenshot have been received. Our team will verify your payment and deliver your product shortly.'}
+              </h2>
               <p className="wa-banner-sub">
                 {language === 'ar'
-                  ? 'اضغط على الزر أدناه لفتح محادثة واتساب مباشرة تحتوي على ملخص طلبك ورقمك المرجعي.'
-                  : 'Click the button below to open a chat pre-filled with your order reference and summary.'}
+                  ? 'طلبك الآن قيد التحقق اليدوي لدى الإدارة. سيتم إرسال بيانات التفعيل لحسابك وبريدك فور مراجعة الإيصال.'
+                  : 'Your order is currently undergoing manual verification by our team. Activation details will be delivered once approved.'}
               </p>
               <a
                 href={whatsappUrl}
@@ -149,7 +149,7 @@ export const OrderSuccessPage = () => {
               >
                 <MessageCircle size={22} />
                 <span>
-                  {language === 'ar' ? 'تأكيد الدفع عبر الواتساب الآن' : 'Confirm on WhatsApp Now'} ({whatsappNum})
+                  {language === 'ar' ? 'متابعة مع الدعم عبر الواتساب' : 'WhatsApp Support & Inquiries'} ({whatsappNum})
                 </span>
                 <ExternalLink size={18} />
               </a>
@@ -160,19 +160,68 @@ export const OrderSuccessPage = () => {
           <div className="order-status-card">
             <div className="status-indicator-line">
               <span className="status-label-heading">{t('status')}:</span>
-              <span className="badge badge-warning status-badge-large">
+              <span className={`badge ${
+                order?.status === 'Delivered'
+                  ? 'badge-success'
+                  : order?.status === 'Confirmed'
+                  ? 'badge-primary'
+                  : order?.status === 'Cancelled'
+                  ? 'badge-danger'
+                  : 'badge-warning'
+              } status-badge-large`}>
                 <Clock size={14} />
-                <span>{order?.status || 'Pending Payment'}</span>
+                <span>
+                  {order?.status === 'Pending Verification'
+                    ? (language === 'ar' ? 'قيد التحقق من الدفع' : 'Pending Verification')
+                    : order?.status === 'Confirmed'
+                    ? (language === 'ar' ? 'تم تأكيد الدفع' : 'Confirmed')
+                    : order?.status === 'Delivered'
+                    ? (language === 'ar' ? 'تم التسليم' : 'Delivered')
+                    : (order?.status || 'Pending Verification')}
+                </span>
               </span>
             </div>
             <p className="status-explanation">
-              {language === 'ar'
-                ? 'حالة الطلب الحالية هي "بانتظار تأكيد الدفع". بمجرد تواصلك معنا وتأكيد العملية، سيقوم فريق الدعم بتسليمك البيانات وتحديث حالة الطلب إلى "تم التسليم" (Delivered).'
-                : 'Order status starts as "Pending Payment". Once support manually verifies payment via WhatsApp, your product credentials will be provided and status updated to "Delivered".'}
+              {order?.status === 'Delivered'
+                ? (language === 'ar' ? 'تم تسليم طلبك بنجاح! راجع بيانات التفعيل أدناه.' : 'Your product credentials have been delivered below.')
+                : order?.status === 'Confirmed'
+                ? (language === 'ar' ? 'تم التحقق من الدفع بنجاح! جاري تجهيز كود التفعيل وتسليمه لك.' : 'Payment confirmed! Support is preparing your credentials.')
+                : (language === 'ar'
+                  ? 'حالة الطلب الحالية: "قيد التحقق من الدفع". نقوم بمطابقة إشعار التحويل البنكي مع الحساب البنكي وتسليمك البيانات فوراً.'
+                  : 'Current status: "Pending Verification". Our team is reviewing your Arab Bank transfer receipt and will fulfill your order shortly.')}
             </p>
           </div>
 
-          {/* Digital Access / Fulfillment Details Box */}
+          {/* Payment Proof Screenshot Preview */}
+          {order?.paymentProofUrl && (
+            <div className="payment-proof-customer-box">
+              <div className="proof-box-header">
+                <Package size={18} className="text-purple" />
+                <h4 className="proof-box-title">{t('paymentProofScreenshot')}</h4>
+              </div>
+              <div className="proof-image-wrapper">
+                <a
+                  href={order.paymentProofUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="proof-link-zoom"
+                  title="Click to view full image"
+                >
+                  <img
+                    src={order.paymentProofUrl}
+                    alt="Payment Transfer Proof"
+                    className="customer-proof-thumb"
+                  />
+                  <span className="zoom-hint">
+                    <ExternalLink size={14} />
+                    <span>{language === 'ar' ? 'عرض بالحجم الكامل' : 'Open Full Screenshot'}</span>
+                  </span>
+                </a>
+              </div>
+            </div>
+          )}
+
+          {/* Digital Access / Fulfillment Details Box (ONLY shown if admin manually provided it) */}
           {order?.fulfillmentNotes ? (
             <div className="fulfillment-box">
               <div className="fulfillment-header">
@@ -441,6 +490,61 @@ export const OrderSuccessPage = () => {
           font-size: 0.9rem;
           display: block;
           word-break: break-all;
+        }
+        .payment-proof-customer-box {
+          width: 100%;
+          text-align: start;
+          background: rgba(124, 92, 252, 0.06);
+          border: 1px solid rgba(124, 92, 252, 0.25);
+          border-radius: var(--radius-sm);
+          padding: 16px;
+          margin-bottom: 22px;
+        }
+        .proof-box-header {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          margin-bottom: 12px;
+        }
+        .proof-box-title {
+          font-size: 0.95rem;
+          font-weight: 700;
+          color: var(--text-white);
+          margin: 0;
+        }
+        .proof-image-wrapper {
+          display: flex;
+          align-items: center;
+        }
+        .proof-link-zoom {
+          display: inline-flex;
+          align-items: center;
+          gap: 14px;
+          background: rgba(0, 0, 0, 0.35);
+          border: 1px solid var(--border-subtle);
+          border-radius: var(--radius-sm);
+          padding: 8px 14px;
+          transition: all 0.2s;
+          text-decoration: none;
+        }
+        .proof-link-zoom:hover {
+          border-color: var(--accent-purple);
+          background: rgba(124, 92, 252, 0.12);
+        }
+        .customer-proof-thumb {
+          width: 54px;
+          height: 54px;
+          object-fit: cover;
+          border-radius: 4px;
+          border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .zoom-hint {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 0.84rem;
+          color: var(--accent-purple);
+          font-weight: 600;
         }
         .success-actions-row {
           display: flex;

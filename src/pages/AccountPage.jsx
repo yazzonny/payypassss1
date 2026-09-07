@@ -70,14 +70,16 @@ export const AccountPage = () => {
     switch (status) {
       case 'Delivered':
         return <span className="badge badge-success"><CheckCircle2 size={12} /> {t('statusDelivered')}</span>;
+      case 'Confirmed':
       case 'Paid':
-        return <span className="badge badge-primary"><Zap size={12} /> {t('statusPaid')}</span>;
+        return <span className="badge badge-primary"><ShieldCheck size={12} /> {t('statusConfirmed')}</span>;
       case 'Cancelled':
         return <span className="badge badge-danger"><XCircle size={12} /> {t('statusCancelled')}</span>;
+      case 'Pending Verification':
       case 'Pending Payment':
       case 'Pending':
       default:
-        return <span className="badge badge-warning"><Clock size={12} /> {language === 'ar' ? 'بانتظار تأكيد الدفع' : 'Pending Payment'}</span>;
+        return <span className="badge badge-warning"><Clock size={12} /> {t('statusPendingVerification')}</span>;
     }
   };
 
@@ -206,21 +208,49 @@ export const AccountPage = () => {
                         </div>
                       </div>
                     )}
+
+                    {/* Rejection / Cancellation Notice if applicable */}
+                    {order.rejectionReason && order.status === 'Cancelled' && (
+                      <div className="rejection-reason-notice">
+                        <AlertCircle size={15} className="text-danger" />
+                        <span>
+                          {language === 'ar' ? 'ملاحظة الإلغاء: ' : 'Cancellation Note: '}
+                          {order.rejectionReason}
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Customer Payment Proof Screenshot link */}
+                    {order.paymentProofUrl && (
+                      <div className="account-proof-row">
+                        <a
+                          href={order.paymentProofUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="account-proof-chip"
+                          title="View submitted transfer screenshot"
+                        >
+                          <img src={order.paymentProofUrl} alt="Transfer proof" className="account-proof-thumb" />
+                          <span>{language === 'ar' ? 'معاينة إشعار التحويل المرفق' : 'View Submitted Proof Screenshot'}</span>
+                          <ExternalLink size={12} />
+                        </a>
+                      </div>
+                    )}
                   </div>
 
                   {/* Order Card Footer */}
                   <div className="order-card-footer">
                     <div className="order-customer-hint">
                       <span>{language === 'ar' ? 'المستلم:' : 'Delivered to:'} {order.customerInfo?.email || order.customerInfo?.phone}</span>
-                      {(order.status === 'Pending Payment' || order.status === 'Pending') && (
+                      {(order.status === 'Pending Verification' || order.status === 'Pending Payment' || order.status === 'Pending') && (
                         <a
-                          href={`https://wa.me/${whatsappNum.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(language === 'ar' ? `مرحباً! أود تأكيد الدفع لطلبي رقم #${order.id} بقيمة ${formatPrice(order.total, language)}.` : `Hello! I would like to confirm payment for Order #${order.id} (${formatPrice(order.total, language)}).`)}`}
+                          href={`https://wa.me/${whatsappNum.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(language === 'ar' ? `مرحباً! أود الاستفسار عن طلبي رقم #${order.id} بقيمة ${formatPrice(order.total, language)}.` : `Hello! Inquiring regarding my Order #${order.id} (${formatPrice(order.total, language)}).`)}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="btn btn-sm btn-outline btn-wa-confirm-order"
                         >
                           <MessageCircle size={14} />
-                          <span>{language === 'ar' ? 'تأكيد الدفع عبر الواتساب' : 'Confirm on WhatsApp'}</span>
+                          <span>{language === 'ar' ? 'متابعة مع الدعم' : 'Contact Support'}</span>
                         </a>
                       )}
                     </div>
@@ -437,6 +467,46 @@ export const AccountPage = () => {
           align-items: center;
           gap: 10px;
           flex-wrap: wrap;
+        }
+        .rejection-reason-notice {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 0.82rem;
+          color: #EF4444;
+          background: rgba(239, 68, 68, 0.08);
+          border: 1px solid rgba(239, 68, 68, 0.25);
+          border-radius: var(--radius-sm);
+          padding: 8px 12px;
+          margin-top: 10px;
+        }
+        .account-proof-row {
+          margin-top: 10px;
+          display: flex;
+        }
+        .account-proof-chip {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid var(--border-subtle);
+          border-radius: var(--radius-sm);
+          padding: 4px 10px;
+          font-size: 0.78rem;
+          color: var(--text-secondary);
+          transition: all 0.2s;
+          text-decoration: none;
+        }
+        .account-proof-chip:hover {
+          background: rgba(124, 92, 252, 0.1);
+          border-color: var(--accent-purple);
+          color: var(--text-white);
+        }
+        .account-proof-thumb {
+          width: 26px;
+          height: 26px;
+          object-fit: cover;
+          border-radius: 4px;
         }
         .btn-wa-confirm-order {
           color: #25D366;

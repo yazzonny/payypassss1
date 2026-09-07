@@ -48,6 +48,14 @@ const STORAGE_KEYS = {
   SETTINGS: 'playpass_settings_v1'
 };
 
+export const BANK_DETAILS = {
+  bankName_en: 'Arab Bank',
+  bankName_ar: 'البنك العربي',
+  accountName_en: 'Yazan Almustafa',
+  accountName_ar: 'يزن المصطفى',
+  phone: '+962780114108'
+};
+
 export const DEFAULT_SETTINGS = {
   paymentLink: '',
   whatsappNumber: '+962780114108'
@@ -189,8 +197,10 @@ export const orderService = {
     const newOrder = {
       id,
       ...orderData,
-      status: 'Pending Payment',
+      status: 'Pending Verification',
+      paymentProofUrl: orderData.paymentProofUrl || '',
       fulfillmentNotes: '',
+      rejectionReason: '',
       createdAt: new Date().toISOString()
     };
 
@@ -208,13 +218,18 @@ export const orderService = {
     return newOrder;
   },
 
-  async updateStatus(orderId, newStatus, fulfillmentNotes = '') {
+  async updateStatus(orderId, newStatus, fulfillmentNotes = '', rejectionReason = '') {
+    const patch = { status: newStatus };
+    if (fulfillmentNotes !== undefined && fulfillmentNotes !== '') {
+      patch.fulfillmentNotes = fulfillmentNotes;
+    }
+    if (rejectionReason !== undefined) {
+      patch.rejectionReason = rejectionReason;
+    }
+
     if (isLiveFirebaseConfigured && db) {
       try {
-        await updateDoc(doc(db, 'orders', orderId), {
-          status: newStatus,
-          fulfillmentNotes
-        });
+        await updateDoc(doc(db, 'orders', orderId), patch);
       } catch (err) {
         console.warn('Firestore order update failed:', err);
       }
@@ -222,7 +237,12 @@ export const orderService = {
     const all = await this.getAll();
     const updated = all.map(order => {
       if (order.id === orderId) {
-        return { ...order, status: newStatus, fulfillmentNotes: fulfillmentNotes || order.fulfillmentNotes };
+        return {
+          ...order,
+          status: newStatus,
+          fulfillmentNotes: fulfillmentNotes !== '' ? fulfillmentNotes : order.fulfillmentNotes,
+          rejectionReason: rejectionReason !== undefined ? rejectionReason : (order.rejectionReason || '')
+        };
       }
       return order;
     });
@@ -233,10 +253,11 @@ export const orderService = {
 
 // --- Image Upload Service ---
 export const imageService = {
-  async upload(file) {
+  async upload(file, folder = 'products') {
     if (isLiveFirebaseConfigured && storage) {
       try {
-        const storageRef = ref(storage, `products/${Date.now()}_${file.name}`);
+        const cleanName = (file.name || 'image.png').replace(/[^a-zA-Z0-9._-]/g, '_');
+        const storageRef = ref(storage, `${folder}/${Date.now()}_${cleanName}`);
         const snapshot = await uploadBytes(storageRef, file);
         return await getDownloadURL(snapshot.ref);
       } catch (err) {
@@ -250,6 +271,10 @@ export const imageService = {
       reader.onerror = reject;
       reader.readAsDataURL(file);
     });
+  },
+
+  async uploadPaymentProof(file) {
+    return this.upload(file, 'payment_proofs');
   }
 };
 

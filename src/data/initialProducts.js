@@ -212,7 +212,9 @@ export const INITIAL_ORDERS = [
     ],
     total: 42.99,
     status: 'Delivered',
+    paymentProofUrl: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=800&auto=format&fit=crop&q=80',
     fulfillmentNotes: 'Account: netflix-user-91@playpass.vip | PIN: 8492 | Expires: 2027-09-07',
+    rejectionReason: '',
     createdAt: '2026-09-07T14:30:00.000Z'
   },
   {
@@ -236,8 +238,10 @@ export const INITIAL_ORDERS = [
       }
     ],
     total: 98.98,
-    status: 'Paid',
-    fulfillmentNotes: 'Awaiting digital key dispatch',
+    status: 'Confirmed',
+    paymentProofUrl: 'https://images.unsplash.com/photo-1554224154-26032ffc0d07?w=800&auto=format&fit=crop&q=80',
+    fulfillmentNotes: 'Payment verified from Arab Bank app statement. Preparing PSN codes.',
+    rejectionReason: '',
     createdAt: '2026-09-07T16:45:00.000Z'
   },
   {
@@ -261,8 +265,10 @@ export const INITIAL_ORDERS = [
       }
     ],
     total: 28.99,
-    status: 'Pending Payment',
+    status: 'Pending Verification',
+    paymentProofUrl: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&auto=format&fit=crop&q=80',
     fulfillmentNotes: '',
+    rejectionReason: '',
     createdAt: '2026-09-07T18:10:00.000Z'
   }
 ];

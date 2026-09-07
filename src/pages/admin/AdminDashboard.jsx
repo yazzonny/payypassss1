@@ -49,7 +49,9 @@ export const AdminDashboard = () => {
 
   const totalOrdersCount = orders.length;
   const activeProductsCount = products.filter(p => p.inStock).length;
-  const pendingOrdersCount = orders.filter(o => o.status === 'Pending').length;
+  const pendingOrdersCount = orders.filter(
+    o => o.status === 'Pending Verification' || o.status === 'Pending' || o.status === 'Pending Payment'
+  ).length;
 
   const subsCount = products.filter(p => p.category === 'subscriptions').length;
   const gamingCount = products.filter(p => p.category === 'gaming').length;
@@ -197,10 +199,18 @@ export const AdminDashboard = () => {
                     <td>
                       <span className={`badge ${
                         order.status === 'Delivered' ? 'badge-success' :
-                        order.status === 'Paid' ? 'badge-primary' :
+                        (order.status === 'Confirmed' || order.status === 'Paid') ? 'badge-primary' :
                         order.status === 'Cancelled' ? 'badge-danger' : 'badge-warning'
                       }`}>
-                        {order.status}
+                        {order.status === 'Pending Verification' || order.status === 'Pending' || order.status === 'Pending Payment'
+                          ? (language === 'ar' ? 'قيد التحقق' : 'Pending Verification')
+                          : order.status === 'Confirmed' || order.status === 'Paid'
+                          ? (language === 'ar' ? 'تم تأكيد الدفع' : 'Confirmed')
+                          : order.status === 'Delivered'
+                          ? (language === 'ar' ? 'تم التسليم' : 'Delivered')
+                          : order.status === 'Cancelled'
+                          ? (language === 'ar' ? 'ملغي' : 'Cancelled')
+                          : order.status}
                       </span>
                     </td>
                     <td>
