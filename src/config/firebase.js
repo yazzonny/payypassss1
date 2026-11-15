@@ -1,5 +1,5 @@
 import { initializeApp, getApps } from 'firebase/app';
-import { getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, query, orderBy } from 'firebase/firestore';
+import { getFirestore, where, collection, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, query, orderBy } from 'firebase/firestore';
 import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { INITIAL_PRODUCTS, INITIAL_ORDERS } from '../data/initialProducts';
@@ -58,7 +58,12 @@ export const BANK_DETAILS = {
 
 export const DEFAULT_SETTINGS = {
   paymentLink: '',
-  whatsappNumber: '+962780114108'
+  whatsappNumber: '+962780114108',
+  // Editable from the admin dashboard
+  bank: { ...BANK_DETAILS },
+  announcement: { enabled: false, text_en: '', text_ar: '' },
+  // Text overrides: { en: { key: 'value' }, ar: { key: 'value' } }
+  content: { en: {}, ar: {} }
 };
 
 // Helper to initialize local storage seed data if empty
@@ -77,6 +82,17 @@ function ensureLocalSeedData() {
 // Ensure seed data is ready immediately
 ensureLocalSeedData();
 
+const withDefaults = (s = {}) => ({
+  ...DEFAULT_SETTINGS,
+  ...s,
+  bank: { ...DEFAULT_SETTINGS.bank, ...(s.bank || {}) },
+  announcement: { ...DEFAULT_SETTINGS.announcement, ...(s.announcement || {}) },
+  content: {
+    en: { ...(s.content?.en || {}) },
+    ar: { ...(s.content?.ar || {}) }
+  }
+});
+
 // --- Settings Service ---
 export const settingsService = {
   async get() {
@@ -84,19 +100,19 @@ export const settingsService = {
       try {
         const snap = await getDoc(doc(db, 'settings', 'general'));
         if (snap.exists()) {
-          return { ...DEFAULT_SETTINGS, ...snap.data() };
+          return withDefaults(snap.data());
         }
       } catch (err) {
         console.warn('Firestore settings fetch failed, reading from local cache:', err);
       }
     }
     const data = localStorage.getItem(STORAGE_KEYS.SETTINGS);
-    return data ? { ...DEFAULT_SETTINGS, ...JSON.parse(data) } : DEFAULT_SETTINGS;
+    return withDefaults(data ? JSON.parse(data) : {});
   },
 
   async update(newSettings) {
     const current = await this.get();
-    const merged = { ...current, ...newSettings };
+    const merged = withDefaults({ ...current, ...newSettings });
     if (isLiveFirebaseConfigured && db) {
       try {
         await setDoc(doc(db, 'settings', 'general'), merged, { merge: true });
@@ -176,6 +192,38 @@ export const productService = {
 
 // --- Order Service ---
 export const orderService = {
+  // Customer-safe reads: with Firestore rules in place, non-admins may only
+  // read their own orders, so they must query by userId / id (never the whole collection).
+  async getForUser(uid) {
+    if (isLiveFirebaseConfigured && db) {
+      try {
+        const snap = await getDocs(query(collection(db, 'orders'), where('userId', '==', uid)));
+        return snap.docs
+          .map(d => ({ id: d.id, ...d.data() }))
+          .sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)));
+      } catch (err) {
+        console.warn('Firestore user orders fetch failed:', err);
+        return [];
+      }
+    }
+    const all = await this.getAll();
+    return all.filter(o => o.userId === uid);
+  },
+
+  async getById(orderId) {
+    if (isLiveFirebaseConfigured && db) {
+      try {
+        const snap = await getDoc(doc(db, 'orders', orderId));
+        return snap.exists() ? { id: snap.id, ...snap.data() } : null;
+      } catch (err) {
+        console.warn('Firestore order fetch failed:', err);
+        return null;
+      }
+    }
+    const all = await this.getAll();
+    return all.find(o => o.id === orderId) || null;
+  },
+
   async getAll() {
     if (isLiveFirebaseConfigured && db) {
       try {

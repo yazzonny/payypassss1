@@ -22,17 +22,8 @@ export const Hero = () => {
           </div>
 
           <h1 className="hero-title">
-            {language === 'ar' ? (
-              <>
-                عالم الاشتراكات الترفيهية <br />
-                <span className="text-gradient">وبطاقات الألعاب الرقمية</span>
-              </>
-            ) : (
-              <>
-                Unlock Premium Streaming <br />
-                <span className="text-gradient">& Next-Gen Gaming</span>
-              </>
-            )}
+            {t('heroTitleLine1')} <br />
+            <span className="text-gradient">{t('heroTitleLine2')}</span>
           </h1>
 
           <p className="hero-subtitle">

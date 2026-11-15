@@ -1,3 +1,4 @@
+import { settingsService } from '../config/firebase';
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const LanguageContext = createContext();
@@ -22,6 +23,8 @@ const translations = {
     // Hero & Home
     heroBadge: '⚡ Instant Digital Delivery • 100% Genuine Warranty',
     heroTitle: 'Unlock Premium Streaming & Next-Gen Gaming',
+    heroTitleLine1: 'Unlock Premium Streaming',
+    heroTitleLine2: '& Next-Gen Gaming',
     heroSubtitle: 'Access top subscriptions like Netflix, IPTV, and Spotify alongside PlayStation, Xbox, and Steam credit at unbeatable prices.',
     heroCtaShop: 'Shop Now',
     heroCtaSubs: 'Browse Subscriptions',
@@ -257,6 +260,8 @@ const translations = {
     // Hero & Home
     heroBadge: '⚡ تسليم رقمي فوري • ضمان ذهبي 100%',
     heroTitle: 'عالم الاشتراكات الترفيهية وبطاقات الألعاب الرقمية',
+    heroTitleLine1: 'عالم الاشتراكات الترفيهية',
+    heroTitleLine2: 'وبطاقات الألعاب الرقمية',
     heroSubtitle: 'احصل على اشتراكات نتفلكس، IPTV، وسبوتيفاي مع بطاقات شحن بلايستيشن، إكس بوكس وستيم بأفضل الأسعار وأسرع تسليم.',
     heroCtaShop: 'تسوق الآن',
     heroCtaSubs: 'تصفح الاشتراكات',
@@ -479,6 +484,16 @@ export const LanguageProvider = ({ children }) => {
     return localStorage.getItem('playpass_lang') || 'en';
   });
 
+  // Text edited by the admin from the dashboard (Site Content)
+  const [overrides, setOverrides] = useState({ en: {}, ar: {} });
+  useEffect(() => {
+    let alive = true;
+    settingsService.get().then(s => { if (alive && s?.content) setOverrides(s.content); });
+    const onUpdate = (e) => { if (e.detail?.content) setOverrides(e.detail.content); };
+    window.addEventListener('playpass_settings_updated', onUpdate);
+    return () => { alive = false; window.removeEventListener('playpass_settings_updated', onUpdate); };
+  }, []);
+
   useEffect(() => {
     localStorage.setItem('playpass_lang', language);
     document.documentElement.setAttribute('lang', language);
@@ -496,7 +511,13 @@ export const LanguageProvider = ({ children }) => {
   };
 
   const t = (key, fallback = '') => {
-    return translations[language]?.[key] || translations.en[key] || fallback || key;
+    return (
+      overrides[language]?.[key] ||
+      translations[language]?.[key] ||
+      translations.en[key] ||
+      fallback ||
+      key
+    );
   };
 
   // Helper for localized object field (e.g. name_en vs name_ar)

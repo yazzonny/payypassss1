@@ -1,0 +1,22 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isAdmin() {
+      return request.auth != null && request.auth.token.email == 'yznshat@gmail.com';
+    }
+
+    // Product images: public read, admin write.
+    match /products/{file} {
+      allow read: if true;
+      allow write: if isAdmin() && request.resource.size < 5 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
+    }
+
+    // Payment receipts: customers upload images only; only the admin reads them.
+    match /payment_proofs/{file} {
+      allow create: if request.resource.size < 10 * 1024 * 1024
+                    && request.resource.contentType.matches('image/.*');
+      allow read: if isAdmin();
+    }
+  }
+}

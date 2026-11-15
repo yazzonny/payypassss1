@@ -24,6 +24,8 @@ export const AdminSettings = () => {
   // Storefront live settings
   const [paymentLink, setPaymentLink] = useState('');
   const [whatsappNumber, setWhatsappNumber] = useState(DEFAULT_SETTINGS.whatsappNumber);
+  const [bank, setBank] = useState(DEFAULT_SETTINGS.bank);
+  const [announcement, setAnnouncement] = useState(DEFAULT_SETTINGS.announcement);
   const [savingSettings, setSavingSettings] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
@@ -32,6 +34,8 @@ export const AdminSettings = () => {
       if (s) {
         setPaymentLink(s.paymentLink || '');
         setWhatsappNumber(s.whatsappNumber || DEFAULT_SETTINGS.whatsappNumber);
+        setBank(s.bank || DEFAULT_SETTINGS.bank);
+        setAnnouncement(s.announcement || DEFAULT_SETTINGS.announcement);
       }
     });
   }, []);
@@ -42,7 +46,9 @@ export const AdminSettings = () => {
     try {
       await settingsService.update({
         paymentLink: paymentLink.trim(),
-        whatsappNumber: whatsappNumber.trim()
+        whatsappNumber: whatsappNumber.trim(),
+        bank,
+        announcement
       });
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
@@ -161,6 +167,62 @@ VITE_FIREBASE_APP_ID=1:1234567890:web:abcdef`;
             </span>
           </div>
 
+          {/* Bank transfer details shown at checkout */}
+          <div className="form-group">
+            <label className="form-label font-bold">
+              <span>{language === 'ar' ? 'بيانات التحويل البنكي (تظهر في صفحة الدفع)' : 'Bank transfer details (shown at checkout)'}</span>
+            </label>
+            <div className="settings-grid-2">
+              {[
+                ['bankName_en', 'Bank name (EN)', 'ltr'],
+                ['bankName_ar', 'اسم البنك (AR)', 'rtl'],
+                ['accountName_en', 'Account holder (EN)', 'ltr'],
+                ['accountName_ar', 'اسم صاحب الحساب (AR)', 'rtl'],
+                ['phone', language === 'ar' ? 'رقم الحساب / الهاتف' : 'Account / phone number', 'ltr']
+              ].map(([key, label, dir]) => (
+                <div key={key}>
+                  <span className="form-hint">{label}</span>
+                  <input
+                    type="text"
+                    dir={dir}
+                    value={bank[key] || ''}
+                    onChange={(e) => setBank({ ...bank, [key]: e.target.value })}
+                    className="form-input"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Announcement bar */}
+          <div className="form-group">
+            <label className="form-label font-bold">
+              <span>{language === 'ar' ? 'شريط الإعلان أعلى الموقع' : 'Top announcement bar'}</span>
+            </label>
+            <label className="settings-check">
+              <input
+                type="checkbox"
+                checked={Boolean(announcement.enabled)}
+                onChange={(e) => setAnnouncement({ ...announcement, enabled: e.target.checked })}
+              />
+              <span>{language === 'ar' ? 'تفعيل الشريط' : 'Show the bar'}</span>
+            </label>
+            <div className="settings-grid-2">
+              <input
+                type="text" dir="ltr" placeholder="Text (EN)"
+                value={announcement.text_en || ''}
+                onChange={(e) => setAnnouncement({ ...announcement, text_en: e.target.value })}
+                className="form-input"
+              />
+              <input
+                type="text" dir="rtl" placeholder="النص (AR)"
+                value={announcement.text_ar || ''}
+                onChange={(e) => setAnnouncement({ ...announcement, text_ar: e.target.value })}
+                className="form-input"
+              />
+            </div>
+          </div>
+
           <div className="settings-actions-bar">
             <button
               type="submit"
@@ -211,8 +273,8 @@ VITE_FIREBASE_APP_ID=1:1234567890:web:abcdef`;
             <ShieldCheck size={16} className="text-green" />
             <span>
               {language === 'ar'
-                ? 'الحساب المصرّح له بالإدارة حصرياً: yznyzn123@gmail.com'
-                : 'Authorized Admin Account: yznyzn123@gmail.com'}
+                ? 'أنت مسجّل الدخول كمسؤول مصرّح'
+                : 'Signed in as the authorized admin'}
             </span>
           </div>
         </div>
@@ -417,7 +479,12 @@ VITE_FIREBASE_APP_ID=1:1234567890:web:abcdef`;
             justify-content: center;
           }
         }
-      `}</style>
+  .settings-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .settings-check { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; cursor: pointer; }
+        .settings-check input { width: 18px; height: 18px; accent-color: var(--primary-purple); }
+        @media (max-width: 640px) { .settings-grid-2 { grid-template-columns: 1fr; } }
+      `}
+      </style>
     </div>
   );
 };

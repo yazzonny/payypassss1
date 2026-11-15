@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../src/context/AuthContext';
 import { useLanguage } from '../../src/context/LanguageContext';
-import { orderService, settingsService } from '../config/firebase';
+import { orderService, settingsService, isLiveFirebaseConfigured } from '../config/firebase';
 import { formatPrice, formatDate } from '../utils/formatters';
 import {
   User,
@@ -32,17 +32,12 @@ export const AccountPage = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const all = await orderService.getAll();
-        if (user) {
-          // Filter to user orders or show demo customer orders
-          const userOrders = all.filter(o =>
-            (o.userId && o.userId === user.uid) ||
-            (o.customerInfo?.email && o.customerInfo.email.toLowerCase() === user.email.toLowerCase()) ||
-            user.isDemo
-          );
-          setOrders(userOrders.length > 0 ? userOrders : all);
+        if (isLiveFirebaseConfigured) {
+          // Live mode: customers only ever see their own orders.
+          setOrders(user ? await orderService.getForUser(user.uid) : []);
         } else {
-          setOrders(all);
+          const all = await orderService.getAll();
+          setOrders(user ? all.filter(o => o.userId === user.uid || user.isDemo) : []);
         }
       } catch (err) {
         console.error('Error fetching account orders:', err);

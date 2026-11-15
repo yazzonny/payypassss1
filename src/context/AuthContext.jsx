@@ -9,7 +9,7 @@ import {
 
 const AuthContext = createContext();
 
-export const AUTHORIZED_ADMIN_EMAIL = 'yznyzn123@gmail.com';
+export const AUTHORIZED_ADMIN_EMAIL = 'yznshat@gmail.com';
 
 const LOCAL_USER_KEY = 'playpass_current_user_v1';
 
@@ -94,6 +94,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   const register = async (email, password, name = '', phone = '') => {
+    if (email.trim().toLowerCase() === AUTHORIZED_ADMIN_EMAIL.toLowerCase()) {
+      throw new Error('This email cannot be used for registration.');
+    }
     const cleanEmail = email.trim();
     if (isLiveFirebaseConfigured && auth) {
       try {
@@ -141,7 +144,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem(LOCAL_USER_KEY);
   };
 
-  // Strictly check that user email matches yznyzn123@gmail.com
+  // Strictly check that user email matches yznshat@gmail.com
   // Demo (non-Firebase) sessions can never be admin on a deployed site, so a
   // forged localStorage entry cannot unlock the admin UI. Real data protection
   // must still be enforced by Firestore security rules.

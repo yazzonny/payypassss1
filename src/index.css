@@ -596,3 +596,32 @@ button, input, select, textarea {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
 }
+
+/* ===== Mobile polish ===== */
+@media (max-width: 430px) {
+  .navbar-container .navbar-actions .lang-toggle-btn span { display: none; }
+  .navbar-container .navbar-actions .lang-toggle-btn { padding-inline: 9px; }
+  .navbar-container .brand-title { font-size: 1.05rem; letter-spacing: 0.5px; }
+}
+.navbar-container { min-width: 0; }
+
+/* Admin tables become stacked cards on small screens (labels injected by AdminLayout) */
+@media (max-width: 760px) {
+  .admin-table, .admin-table tbody, .admin-table tr, .admin-table td { display: block; width: 100%; }
+  .admin-table thead { display: none; }
+  .admin-table tr {
+    border: 1px solid var(--border-subtle); border-radius: 12px;
+    margin-bottom: 12px; padding: 6px 14px; background: var(--bg-surface-elevated);
+  }
+  .admin-table td {
+    display: flex; justify-content: space-between; align-items: center; gap: 14px;
+    padding: 9px 0; border: 0 !important; text-align: end; min-width: 0;
+  }
+  .admin-table td::before {
+    content: attr(data-label); flex-shrink: 0; font-weight: 700; font-size: 0.74rem;
+    color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; text-align: start;
+  }
+  .admin-table td > * { max-width: 100%; }
+  .admin-header-bar { padding: 14px !important; gap: 10px !important; }
+  .admin-top-controls { width: 100%; flex-wrap: wrap; }
+}

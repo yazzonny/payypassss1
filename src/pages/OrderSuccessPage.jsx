@@ -51,8 +51,7 @@ export const OrderSuccessPage = () => {
     if (!order) {
       const fetchOrder = async () => {
         try {
-          const allOrders = await orderService.getAll();
-          const found = allOrders.find(o => o.id === orderId);
+          const found = await orderService.getById(orderId);
           if (found) setOrder(found);
         } catch (err) {
           console.error('Error fetching success order:', err);

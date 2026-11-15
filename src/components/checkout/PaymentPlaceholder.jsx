@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
-import { BANK_DETAILS, imageService } from '../../config/firebase';
+import { BANK_DETAILS, imageService, settingsService } from '../../config/firebase';
 import { formatPrice } from '../../utils/formatters';
 import {
   Building2,
@@ -21,6 +21,10 @@ import {
 export const PaymentPlaceholder = ({ total, onPaymentSuccess, isProcessing: externalProcessing }) => {
   const { language, t, isRTL } = useLanguage();
   const [copiedField, setCopiedField] = useState(null);
+  const [bank, setBank] = useState(BANK_DETAILS);
+  React.useEffect(() => {
+    settingsService.get().then(s => { if (s?.bank) setBank(s.bank); });
+  }, []);
 
   // Screenshot Upload State
   const [screenshotFile, setScreenshotFile] = useState(null);
@@ -145,9 +149,9 @@ export const PaymentPlaceholder = ({ total, onPaymentSuccess, isProcessing: exte
 
   const isBusy = isUploading || externalProcessing;
 
-  const bankName = language === 'ar' ? BANK_DETAILS.bankName_ar : BANK_DETAILS.bankName_en;
-  const accountName = language === 'ar' ? BANK_DETAILS.accountName_ar : BANK_DETAILS.accountName_en;
-  const phoneVal = BANK_DETAILS.phone;
+  const bankName = language === 'ar' ? bank.bankName_ar : bank.bankName_en;
+  const accountName = language === 'ar' ? bank.accountName_ar : bank.accountName_en;
+  const phoneVal = bank.phone;
 
   return (
     <div className="bank-payment-root">

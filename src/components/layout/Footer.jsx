@@ -53,7 +53,6 @@ export const Footer = () => {
             <li><Link to="/catalog">{t('navCatalog')}</Link></li>
             <li><Link to="/account">{t('navMyOrders')}</Link></li>
             <li><Link to="/cart">{t('cart')}</Link></li>
-            <li><Link to="/admin">{t('navAdmin')} (yznyzn123)</Link></li>
           </ul>
         </div>
 

@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { isLiveFirebaseConfigured } from '../../config/firebase';
@@ -8,6 +8,7 @@ import {
   Package,
   ShoppingBag,
   Settings,
+  Type,
   ArrowLeft,
   ArrowRight,
   ShieldCheck,
@@ -22,38 +23,29 @@ export const AdminLayout = () => {
   const { user, isAdmin, logout } = useAuth();
   const { language, t, isRTL } = useLanguage();
   const location = useLocation();
-  const navigate = useNavigate();
 
   const ArrowIcon = isRTL ? ArrowLeft : ArrowRight;
 
-  if (!isAdmin) {
-    return (
-      <div className="container py-80">
-        <div className="admin-lock-card glass-card text-center">
-          <div className="admin-lock-icon">
-            <ShieldAlert size={50} />
-          </div>
-          <h2 className="lock-title">
-            {language === 'ar' ? 'منطقة المشرفين فقط (Admin Access)' : 'Admin Protected Area'}
-          </h2>
-          <p className="lock-subtitle">
-            {language === 'ar'
-              ? 'الوصول إلى لوحة التحكم محصور حصرياً بالحساب المعتمد: yznyzn123@gmail.com'
-              : 'Admin dashboard access is strictly restricted to the authorized account: yznyzn123@gmail.com'}
-          </p>
-          <div className="lock-actions">
-            <Link to="/auth" className="btn btn-primary">
-              <span>{language === 'ar' ? 'تسجيل الدخول كمسؤول' : 'Admin Sign In'}</span>
-            </Link>
-            <Link to="/" className="btn btn-outline">
-              <Store size={16} />
-              <span>{language === 'ar' ? 'العودة للمتجر' : 'Back to Store'}</span>
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // Label every table cell with its column title so tables can render as cards on phones.
+  useEffect(() => {
+    const label = () => {
+      document.querySelectorAll('.admin-table').forEach(table => {
+        const heads = [...table.querySelectorAll('thead th')].map(th => th.textContent.trim());
+        table.querySelectorAll('tbody tr').forEach(tr => {
+          [...tr.children].forEach((td, i) => {
+            if (heads[i] && td.dataset.label !== heads[i]) td.dataset.label = heads[i];
+          });
+        });
+      });
+    };
+    label();
+    const mo = new MutationObserver(label);
+    mo.observe(document.body, { childList: true, subtree: true });
+    return () => mo.disconnect();
+  }, [location.pathname, isAdmin]);
+
+  // Non-admins get no hint that an admin area exists.
+  if (!isAdmin) return <Navigate to="/" replace />;
 
   const isActive = (path) => {
     if (path === '/admin') return location.pathname === '/admin';
@@ -116,6 +108,13 @@ export const AdminLayout = () => {
           >
             <ShoppingBag size={17} />
             <span>{t('adminTabOrders')}</span>
+          </Link>
+          <Link
+            to="/admin/content"
+            className={`admin-tab ${isActive('/admin/content') ? 'active' : ''}`}
+          >
+            <Type size={17} />
+            <span>{language === 'ar' ? 'محتوى الموقع' : 'Site Content'}</span>
           </Link>
           <Link
             to="/admin/settings"

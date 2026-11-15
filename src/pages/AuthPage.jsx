@@ -40,7 +40,7 @@ export const AuthPage = () => {
           return;
         }
         const res = await login(email, password);
-        if (res.user?.email?.toLowerCase() === 'yznyzn123@gmail.com') {
+        if (res.user?.role === 'admin') {
           navigate('/admin');
         } else {
           navigate('/account');
@@ -51,12 +51,6 @@ export const AuthPage = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleFillAdminEmail = () => {
-    setEmail('yznyzn123@gmail.com');
-    setIsRegister(false);
-    setError('');
   };
 
   const handleQuickCustomer = async () => {
@@ -191,25 +185,12 @@ export const AuthPage = () => {
             <div className="demo-buttons-grid">
               <button
                 type="button"
-                onClick={handleFillAdminEmail}
-                className="btn btn-sm btn-secondary demo-login-btn"
-                title="Fill authorized admin email"
-              >
-                <span>🔑 {language === 'ar' ? 'ملء بريد المشرف (yznyzn123)' : 'Admin: yznyzn123@...'}</span>
-              </button>
-              <button
-                type="button"
                 onClick={handleQuickCustomer}
                 className="btn btn-sm btn-outline demo-login-btn"
               >
                 <span>👤 {t('demoUserBtn')}</span>
               </button>
             </div>
-            <p className="admin-notice-small">
-              {language === 'ar'
-                ? 'لوحة التحكم مقصورة حصرياً على: yznyzn123@gmail.com بدون كلمة مرور مسبقة.'
-                : 'Admin dashboard access is strictly restricted to yznyzn123@gmail.com.'}
-            </p>
           </div>
         </div></Tilt>
       </div>

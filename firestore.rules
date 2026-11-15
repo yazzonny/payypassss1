@@ -1,0 +1,35 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // The only account allowed to manage the store.
+    function isAdmin() {
+      return request.auth != null && request.auth.token.email == 'yznshat@gmail.com';
+    }
+
+    // Public catalog and site settings: anyone reads, only the admin writes.
+    match /products/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /settings/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Orders: anyone can place one, customers read only their own, the admin manages all.
+    match /orders/{id} {
+      allow create: if request.resource.data.status == 'Pending Verification';
+      allow get: if isAdmin()
+                 || resource.data.userId == null
+                 || (request.auth != null && resource.data.userId == request.auth.uid);
+      allow list: if isAdmin()
+                  || (request.auth != null && resource.data.userId == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
