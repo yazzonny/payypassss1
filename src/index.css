@@ -575,3 +575,12 @@ button, input, select, textarea {
   .tilt-inner { transition: none; }
 }
 @media (hover: none) { .tilt-inner { transform: none !important; } }
+
+.route-loading { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 50vh; }
+.route-spinner {
+  width: 38px; height: 38px; border-radius: 50%;
+  border: 3px solid var(--border-subtle); border-top-color: var(--primary-purple);
+  animation: routeSpin 0.8s linear infinite;
+}
+@keyframes routeSpin { to { transform: rotate(360deg); } }
+[dir="rtl"] .scene3d { transform: scaleX(-1); }

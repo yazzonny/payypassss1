@@ -1,3 +1,4 @@
+import { Tilt } from '../components/fx/Tilt';
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { productService } from '../config/firebase';
@@ -118,7 +119,7 @@ export const ProductDetailPage = () => {
           {/* Product Media Column */}
           <div className="detail-media-wrap">
             <div className="detail-image-box glass-card">
-              <img src={product.imageUrl} alt={name} className="detail-main-img" />
+              <Tilt max={8} scale={1.02}><img src={product.imageUrl} alt={name} className="detail-main-img" /></Tilt>
               {badge && (
                 <span className="badge badge-primary detail-badge-top">
                   <Zap size={12} /> {badge}
