@@ -1,9 +1,10 @@
+import { Reveal } from '../components/fx/Reveal';
 import React, { useEffect, useState } from 'react';
 import { useParams, useLocation, Link } from 'react-router-dom';
 import confetti from 'canvas-confetti';
 import { useLanguage } from '../../src/context/LanguageContext';
 import { orderService, settingsService, DEFAULT_SETTINGS } from '../config/firebase';
-import { formatPrice, formatDate } from '../utils/formatters';
+import { formatPrice } from '../utils/formatters';
 import {
   CheckCircle2,
   Copy,
@@ -15,7 +16,6 @@ import {
   ArrowRight,
   ArrowLeft,
   ShieldCheck,
-  Sparkles,
   ExternalLink
 } from 'lucide-react';
 
@@ -103,7 +103,7 @@ export const OrderSuccessPage = () => {
   return (
     <div className="success-page-root">
       <div className="container">
-        <div className="success-card glass-card">
+        <Reveal><div className="success-card glass-card">
           {/* Confirmed Icon */}
           <div className="success-icon-wrap animate-glow">
             <CheckCircle2 size={54} className="success-check-icon" />
@@ -270,7 +270,7 @@ export const OrderSuccessPage = () => {
               <span>{t('navHome')}</span>
             </Link>
           </div>
-        </div>
+        </div></Reveal>
       </div>
 
       <style>{`

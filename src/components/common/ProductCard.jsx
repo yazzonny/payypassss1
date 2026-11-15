@@ -4,7 +4,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import { useCart } from '../../context/CartContext';
 import { formatPrice } from '../../utils/formatters';
 import { Tilt } from '../fx/Tilt';
-import { ShoppingCart, Star, Zap, CheckCircle2 } from 'lucide-react';
+import { ShoppingCart, Star, Zap } from 'lucide-react';
 
 export const ProductCard = ({ product }) => {
   const { language, t, tObj } = useLanguage();

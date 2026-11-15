@@ -14,7 +14,6 @@ import {
   CheckCircle2,
   ChevronRight,
   ChevronLeft,
-  ArrowRight,
   Plus,
   Minus,
   Sparkles,

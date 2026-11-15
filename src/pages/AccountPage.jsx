@@ -1,3 +1,4 @@
+import { Tilt } from '../components/fx/Tilt';
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../src/context/AuthContext';
@@ -12,10 +13,10 @@ import {
   AlertCircle,
   XCircle,
   Copy,
-  Zap,
   ArrowRight,
   ArrowLeft,
   ExternalLink,
+  MessageCircle,
   ShieldCheck
 } from 'lucide-react';
 
@@ -87,7 +88,7 @@ export const AccountPage = () => {
     <div className="account-page-root">
       <div className="container">
         {/* Profile Header Bar */}
-        <div className="profile-hero-card glass-card">
+        <Tilt max={4}><div className="profile-hero-card glass-card">
           <div className="profile-avatar-box">
             <User size={36} />
           </div>
@@ -106,7 +107,7 @@ export const AccountPage = () => {
               {t('navLogout')}
             </button>
           </div>
-        </div>
+        </div></Tilt>
 
         {/* Order History Section */}
         <div className="orders-section">

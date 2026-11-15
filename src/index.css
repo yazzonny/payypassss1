@@ -584,3 +584,15 @@ button, input, select, textarea {
 }
 @keyframes routeSpin { to { transform: rotate(360deg); } }
 [dir="rtl"] .scene3d { transform: scaleX(-1); }
+
+/* Accessibility */
+.skip-link {
+  position: absolute; top: -48px; inset-inline-start: 12px; z-index: 2000;
+  background: var(--primary-purple); color: #fff; padding: 10px 16px; border-radius: var(--radius-sm);
+  transition: top 0.15s ease;
+}
+.skip-link:focus { top: 12px; }
+:focus-visible { outline: 2px solid var(--accent-purple); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+}

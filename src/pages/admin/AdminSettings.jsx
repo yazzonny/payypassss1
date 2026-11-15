@@ -3,18 +3,15 @@ import { isLiveFirebaseConfigured, settingsService, DEFAULT_SETTINGS } from '../
 import { useLanguage } from '../../../src/context/LanguageContext';
 import { INITIAL_PRODUCTS, INITIAL_ORDERS } from '../../data/initialProducts';
 import {
-  Settings,
   Database,
   Key,
   Copy,
   Check,
   RefreshCw,
-  ExternalLink,
   ShieldCheck,
   AlertTriangle,
   CreditCard,
   Phone,
-  MessageCircle,
   Save,
   CheckCircle2
 } from 'lucide-react';

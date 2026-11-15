@@ -4,6 +4,7 @@ import { LanguageProvider } from './context/LanguageContext';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 
+import { ErrorBoundary } from './components/layout/ErrorBoundary';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
 
@@ -32,7 +33,9 @@ function App() {
           <BrowserRouter>
             <div className="app-shell">
               <Navbar />
-              <main className="main-content">
+              <a href="#main" className="skip-link">Skip to content</a>
+              <main id="main" className="main-content">
+                <ErrorBoundary>
                 <Suspense fallback={<div className="route-loading"><span className="route-spinner" /></div>}>
                 <Routes>
                   {/* Public Storefront Routes */}
@@ -57,6 +60,7 @@ function App() {
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
                 </Suspense>
+                </ErrorBoundary>
               </main>
               <Footer />
             </div>

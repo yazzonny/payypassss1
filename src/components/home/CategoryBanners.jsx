@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
 import { Tilt } from '../fx/Tilt';
 import { Reveal } from '../fx/Reveal';
-import { Tv, Gamepad2, ArrowRight, ArrowLeft, Film, Trophy, Sparkles } from 'lucide-react';
+import { Tv, Gamepad2, ArrowRight, ArrowLeft, Trophy } from 'lucide-react';
 
 export const CategoryBanners = () => {
   const { language, t, isRTL } = useLanguage();

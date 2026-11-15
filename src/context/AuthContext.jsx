@@ -77,7 +77,10 @@ export const AuthProvider = ({ children }) => {
     }
 
     // Local Demo / Offline Fallback login
-    const isAuthorizedAdmin = cleanEmail.toLowerCase() === AUTHORIZED_ADMIN_EMAIL.toLowerCase();
+    // Demo mode has no real authentication, so the admin role is only ever
+    // granted in local development builds, never in a deployed site.
+    const isAuthorizedAdmin =
+      import.meta.env.DEV && cleanEmail.toLowerCase() === AUTHORIZED_ADMIN_EMAIL.toLowerCase();
     const mockUser = {
       uid: `user-${Date.now()}`,
       email: cleanEmail,
@@ -139,9 +142,14 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Strictly check that user email matches yznyzn123@gmail.com
+  // Demo (non-Firebase) sessions can never be admin on a deployed site, so a
+  // forged localStorage entry cannot unlock the admin UI. Real data protection
+  // must still be enforced by Firestore security rules.
   const isAdmin = Boolean(
     user?.email &&
-    user.email.toLowerCase().trim() === AUTHORIZED_ADMIN_EMAIL.toLowerCase()
+    user.role === 'admin' &&
+    user.email.toLowerCase().trim() === AUTHORIZED_ADMIN_EMAIL.toLowerCase() &&
+    (import.meta.env.DEV || (isLiveFirebaseConfigured && !user.isDemo))
   );
 
   return (

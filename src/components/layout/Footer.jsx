@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
 import { settingsService, DEFAULT_SETTINGS } from '../../config/firebase';
-import { Zap, ShieldCheck, Headphones, MessageCircle } from 'lucide-react';
+import { Zap, ShieldCheck, MessageCircle } from 'lucide-react';
 
 export const Footer = () => {
   const { t } = useLanguage();

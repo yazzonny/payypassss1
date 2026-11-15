@@ -1,16 +1,23 @@
-# React + Vite
+# PlayPass
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Digital subscriptions and gaming credits store (React 19 + Vite, Firebase, Three.js).
 
-Currently, two official plugins are available:
+## Run
+```bash
+npm install
+npm run dev       # local dev (Local Demo Mode if no Firebase env)
+npm run build     # production build
+npm run lint
+```
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Configuration
+Copy `.env.example` to `.env.local` and fill in your Firebase values.
+Without them the site runs in Local Demo Mode (localStorage). Demo mode never grants admin access in production builds.
 
-## React Compiler
+## Deployment (Vercel)
+`vercel.json` provides SPA rewrites (so `/catalog`, `/cart`... survive a refresh), security headers and long-term asset caching.
+Set the `VITE_FIREBASE_*` variables in the Vercel project settings.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+## Notes
+- 3D effects live in `src/components/fx` (`Scene3D`, `Tilt`, `Reveal`) and respect `prefers-reduced-motion`.
+- Admin access in the UI is derived on the client. Protect real data with Firestore security rules.

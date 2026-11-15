@@ -7,7 +7,7 @@ import { Reveal } from '../components/fx/Reveal';
 import { ProductCard } from '../components/common/ProductCard';
 import { productService } from '../config/firebase';
 import { useLanguage } from '../../src/context/LanguageContext';
-import { Sparkles, ArrowRight, ArrowLeft, Star, MessageSquare } from 'lucide-react';
+import { Sparkles, ArrowRight, ArrowLeft, Star } from 'lucide-react';
 
 export const HomePage = () => {
   const { language, t, isRTL } = useLanguage();

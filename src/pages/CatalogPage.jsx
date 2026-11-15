@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { Reveal } from '../components/fx/Reveal';
 import { ProductCard } from '../components/common/ProductCard';
 import { productService } from '../config/firebase';
 import { useLanguage } from '../../src/context/LanguageContext';
-import { Search, Filter, Layers, Tv, Gamepad2, SlidersHorizontal, X } from 'lucide-react';
+import { Search, Filter, Layers, Tv, Gamepad2, X } from 'lucide-react';
 
 export const CatalogPage = () => {
   const { language, t, tObj } = useLanguage();
@@ -198,8 +199,8 @@ export const CatalogPage = () => {
           </div>
         ) : filteredProducts.length > 0 ? (
           <div className="grid-products">
-            {filteredProducts.map(product => (
-              <ProductCard key={product.id} product={product} />
+            {filteredProducts.map((product, idx) => (
+              <Reveal key={product.id} delay={(idx % 8) * 45}><ProductCard product={product} /></Reveal>
             ))}
           </div>
         ) : (

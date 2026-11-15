@@ -9,13 +9,10 @@ import { PaymentPlaceholder } from '../components/checkout/PaymentPlaceholder';
 import {
   ShieldCheck,
   User,
-  Mail,
   Phone,
-  FileText,
   Lock,
   ArrowLeft,
-  ArrowRight,
-  AlertCircle
+  ArrowRight
 } from 'lucide-react';
 
 export const CheckoutPage = () => {

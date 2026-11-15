@@ -7,12 +7,9 @@ import {
   Edit2,
   Trash2,
   Image as ImageIcon,
-  Check,
   X,
   UploadCloud,
-  Layers,
   AlertCircle,
-  Eye,
   Tv,
   Gamepad2
 } from 'lucide-react';

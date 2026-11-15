@@ -11,7 +11,6 @@ import {
   ArrowLeft,
   ShoppingBag,
   Tag,
-  ShieldCheck,
   Zap,
   CheckCircle2,
   AlertCircle

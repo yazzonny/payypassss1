@@ -1,8 +1,9 @@
+import { Tilt } from '../components/fx/Tilt';
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useLanguage } from '../../src/context/LanguageContext';
 import { useAuth } from '../../src/context/AuthContext';
-import { Lock, Mail, User, Phone, ShieldCheck, Sparkles } from 'lucide-react';
+import { Lock, Mail, User, Phone, Sparkles } from 'lucide-react';
 
 export const AuthPage = () => {
   const { language, t } = useLanguage();
@@ -74,7 +75,7 @@ export const AuthPage = () => {
   return (
     <div className="auth-page-root">
       <div className="container">
-        <div className="auth-card glass-card">
+        <Tilt max={3} scale={1.005}><div className="auth-card glass-card">
           {/* Logo Header */}
           <div className="auth-logo-box">
             <img src="/assets/logo.png" alt="PlayPass" className="auth-logo-img" />
@@ -210,7 +211,7 @@ export const AuthPage = () => {
                 : 'Admin dashboard access is strictly restricted to yznyzn123@gmail.com.'}
             </p>
           </div>
-        </div>
+        </div></Tilt>
       </div>
 
       <style>{`

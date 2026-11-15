@@ -8,12 +8,10 @@ import {
   ShoppingBag,
   Package,
   Clock,
-  CheckCircle2,
   TrendingUp,
   Plus,
   ArrowRight,
   ArrowLeft,
-  Tv,
   Gamepad2
 } from 'lucide-react';
 

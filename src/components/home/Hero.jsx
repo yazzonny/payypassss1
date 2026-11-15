@@ -3,7 +3,7 @@ import { Tilt } from '../fx/Tilt';
 const Scene3D = lazy(() => import('../fx/Scene3D').then(m => ({ default: m.Scene3D })));
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
-import { ArrowRight, ArrowLeft, Zap, Shield, Sparkles, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Zap, Sparkles } from 'lucide-react';
 
 export const Hero = () => {
   const { language, t, isRTL } = useLanguage();
