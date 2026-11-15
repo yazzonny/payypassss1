@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Hero } from '../components/home/Hero';
 import { CategoryBanners } from '../components/home/CategoryBanners';
 import { TrustSection } from '../components/home/TrustSection';
+import { Reveal } from '../components/fx/Reveal';
 import { ProductCard } from '../components/common/ProductCard';
 import { productService } from '../config/firebase';
 import { useLanguage } from '../../src/context/LanguageContext';
@@ -59,8 +60,8 @@ export const HomePage = () => {
           </div>
 
           <div className="grid-products">
-            {displayProducts.map(prod => (
-              <ProductCard key={prod.id} product={prod} />
+            {displayProducts.map((prod, i) => (
+              <Reveal key={prod.id} delay={i * 80}><ProductCard product={prod} /></Reveal>
             ))}
           </div>
         </div>

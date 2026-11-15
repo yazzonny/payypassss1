@@ -1,5 +1,7 @@
 import React from 'react';
 import { useLanguage } from '../../context/LanguageContext';
+import { Tilt } from '../fx/Tilt';
+import { Reveal } from '../fx/Reveal';
 import { Zap, ShieldCheck, Headphones, CreditCard } from 'lucide-react';
 
 export const TrustSection = () => {
@@ -38,11 +40,15 @@ export const TrustSection = () => {
 
         <div className="trust-grid">
           {features.map((item, idx) => (
-            <div key={idx} className="trust-card glass-card">
-              <div className="trust-icon-box">{item.icon}</div>
-              <h3 className="trust-card-title">{item.title}</h3>
-              <p className="trust-card-desc">{item.desc}</p>
-            </div>
+            <Reveal key={idx} delay={idx * 90}>
+              <Tilt max={10}>
+                <div className="trust-card glass-card">
+                  <div className="trust-icon-box">{item.icon}</div>
+                  <h3 className="trust-card-title">{item.title}</h3>
+                  <p className="trust-card-desc">{item.desc}</p>
+                </div>
+              </Tilt>
+            </Reveal>
           ))}
         </div>
       </div>

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
 import { useCart } from '../../context/CartContext';
 import { formatPrice } from '../../utils/formatters';
+import { Tilt } from '../fx/Tilt';
 import { ShoppingCart, Star, Zap, CheckCircle2 } from 'lucide-react';
 
 export const ProductCard = ({ product }) => {
@@ -23,6 +24,7 @@ export const ProductCard = ({ product }) => {
   const displayPrice = defaultVariant ? defaultVariant.price : product.price;
 
   return (
+    <Tilt max={7}>
     <div className="product-card glass-card">
       <Link to={`/product/${product.id}`} className="product-card-link">
         {/* Image & Badges */}
@@ -308,5 +310,6 @@ export const ProductCard = ({ product }) => {
         }
       `}</style>
     </div>
+    </Tilt>
   );
 };

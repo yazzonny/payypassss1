@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
+import { Tilt } from '../fx/Tilt';
+import { Reveal } from '../fx/Reveal';
 import { Tv, Gamepad2, ArrowRight, ArrowLeft, Film, Trophy, Sparkles } from 'lucide-react';
 
 export const CategoryBanners = () => {
@@ -19,7 +21,7 @@ export const CategoryBanners = () => {
 
         <div className="categories-grid">
           {/* Subscriptions Card */}
-          <Link to="/catalog?category=subscriptions" className="category-card cat-subs glass-card">
+          <Reveal><Tilt max={6}><Link to="/catalog?category=subscriptions" className="category-card cat-subs glass-card">
             <div className="category-card-bg bg-subs-gradient" />
             <div className="cat-icon-box">
               <Tv size={28} />
@@ -39,10 +41,10 @@ export const CategoryBanners = () => {
                 <ArrowIcon size={16} />
               </div>
             </div>
-          </Link>
+          </Link></Tilt></Reveal>
 
           {/* Gaming Card */}
-          <Link to="/catalog?category=gaming" className="category-card cat-gaming glass-card">
+          <Reveal><Tilt max={6}><Link to="/catalog?category=gaming" className="category-card cat-gaming glass-card">
             <div className="category-card-bg bg-gaming-gradient" />
             <div className="cat-icon-box">
               <Gamepad2 size={28} />
@@ -62,7 +64,7 @@ export const CategoryBanners = () => {
                 <ArrowIcon size={16} />
               </div>
             </div>
-          </Link>
+          </Link></Tilt></Reveal>
         </div>
       </div>
 

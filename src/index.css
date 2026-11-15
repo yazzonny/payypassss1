@@ -531,3 +531,47 @@ button, input, select, textarea {
   }
 }
 
+
+/* ===== 3D touches ===== */
+.tilt-wrap { perspective: 1000px; height: 100%; }
+.tilt-inner {
+  --rx: 0deg; --ry: 0deg; --ts: 1; --gx: 50%; --gy: 50%;
+  position: relative; height: 100%;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--rx)) rotateY(var(--ry)) scale(var(--ts));
+  transition: transform 0.18s ease-out;
+  will-change: transform;
+  border-radius: var(--radius-md);
+}
+.tilt-inner > :first-child { height: 100%; }
+.tilt-glare {
+  position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: radial-gradient(circle at var(--gx) var(--gy), rgba(255,255,255,0.14), transparent 55%);
+  opacity: 0; transition: opacity 0.25s ease; z-index: 3;
+}
+.tilt-inner:hover .tilt-glare { opacity: 1; }
+.tilt-inner:hover { box-shadow: 0 25px 45px -15px rgba(0,0,0,0.6), 0 0 40px rgba(124,92,252,0.25); }
+.tilt-inner .product-img, .tilt-inner .trust-icon-box, .tilt-inner .cat-icon-box { transform: translateZ(28px); }
+
+.reveal3d {
+  opacity: 0; transform: perspective(900px) translateY(36px) rotateX(14deg);
+  transform-origin: 50% 100%;
+  transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1);
+}
+.reveal3d.is-in { opacity: 1; transform: none; }
+
+.scene3d { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.scene3d canvas { width: 100%; height: 100%; display: block; }
+
+/* extruded 3D buttons */
+.btn-primary {
+  box-shadow: 0 4px 14px rgba(124,92,252,0.35), 0 5px 0 #4b2fc4;
+}
+.btn-primary:hover { box-shadow: 0 8px 22px var(--primary-glow), 0 5px 0 #4b2fc4; }
+.btn-primary:active { transform: translateY(4px); box-shadow: 0 1px 0 #4b2fc4, 0 2px 8px var(--primary-glow); }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal3d { opacity: 1; transform: none; transition: none; }
+  .tilt-inner { transition: none; }
+}
+@media (hover: none) { .tilt-inner { transform: none !important; } }

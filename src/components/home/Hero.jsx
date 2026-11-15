@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
+import { Tilt } from '../fx/Tilt';
+const Scene3D = lazy(() => import('../fx/Scene3D').then(m => ({ default: m.Scene3D })));
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
 import { ArrowRight, ArrowLeft, Zap, Shield, Sparkles, CheckCircle2 } from 'lucide-react';
@@ -10,6 +12,7 @@ export const Hero = () => {
   return (
     <section className="hero-section">
       <div className="hero-glow-sphere" />
+      <Suspense fallback={null}><Scene3D /></Suspense>
       <div className="container hero-container">
         {/* Left Column: Content */}
         <div className="hero-content">
@@ -69,13 +72,15 @@ export const Hero = () => {
         {/* Right Column: Hero Graphic with Uploaded Logo */}
         <div className="hero-graphic-wrap">
           <div className="hero-card-glow">
-            <div className="hero-logo-frame animate-float">
-              <img
-                src="/assets/logo.png"
-                alt="PlayPass Gamer Character"
-                className="hero-logo-img"
-              />
-            </div>
+            <Tilt max={14} scale={1.04}>
+              <div className="hero-logo-frame animate-float">
+                <img
+                  src="/assets/logo.png"
+                  alt="PlayPass Gamer Character"
+                  className="hero-logo-img"
+                />
+              </div>
+            </Tilt>
 
             {/* Floating Gamertag Card 1 */}
             <div className="floating-badge badge-top-right">
